@@ -1,0 +1,22 @@
+name: Release
+
+on: [push]
+
+jobs:
+  build_release:
+    runs-on: ubuntu-latest
+    name: Docker Release
+    steps:
+      - name: Checkout Code
+        id: checkout
+        uses: actions/checkout@v2
+
+      - name: Build Docker Image
+        id: docker_build
+        run: docker build -t ghcr.io/akaahmedkamal/Docker-macOS -f ./Dockerfile . --progress=plain
+
+      - name: Docker Login
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io --username akaahmedkamal --password-stdin
+
+      - name: Push to ghcr.io
+        run: docker push ghcr.io/akaahmedkamal/Docker-macOS:latest
